@@ -123,7 +123,6 @@ P.create.universe = create_universe
 function create_universe_0()
     -- 0: split: split universe into 3rds with the middle third a no-man's land (aka two factions)
     local thirds = P._.x_known_dim/3
-    print(thirds)
 
     -- side 1 
     local first_third_1 = 0
@@ -230,6 +229,12 @@ function create_universe_0()
         local asteroid_y = math.random(P._.y_known_dim)
         local asteroid_z = math.random(P._.z_known_dim)
         add_asteroid(asteroid_x, asteroid_y, asteroid_z)
+        local carbon = math.random()
+        local silicates = math.random()
+        local nickeliron = math.random()
+        local preciousmetals = math.random()
+        local asteroid_id = add_asteroid(asteroid_x, asteroid_y, asteroid_z)
+        set_asteroid_minerals(asteroid_id, carbon, silicates, nickeliron, preciousmetals)
     end
 
     for i = 1, 300 do
@@ -265,6 +270,279 @@ P.create.universe_0 = create_universe_0
 
 function create_universe_1()
     -- 1: quartered: split universe into 8ths with 4 clusters separated by no-man's land
+
+    local thirds_x = P._.x_known_dim/3
+    local thirds_z = P._.z_known_dim/3
+
+    local one_one_x1 = 0
+    local one_one_x2 = one_one_x1 + thirds_x
+    local one_one_z1 = 0
+    local one_one_z2 = one_one_z1 + thirds_z
+
+    local one_two_x1 = one_one_x2
+    local one_two_x2 = one_two_x1 + thirds_x
+    local one_two_z1 = one_one_z1
+    local one_two_z2 = one_one_z2
+
+    local one_three_x1 = one_two_x2
+    local one_three_x2 = one_three_x1 + thirds_x
+    local one_three_z1 = one_one_z1
+    local one_three_z2 = one_one_z2
+
+    local two_one_x1 = one_one_x1
+    local two_one_x2 = one_one_x2
+    local two_one_z1 = one_one_z2
+    local two_one_z2 = two_one_z1 + thirds_z
+
+    local two_two_x1 = one_two_x1
+    local two_two_x2 = one_two_x2
+    local two_two_z1 = two_one_z1
+    local two_two_z2 = two_one_z2
+
+    local two_three_x1 = one_three_x1
+    local two_three_x2 = one_three_x2
+    local two_three_z1 = two_two_z1
+    local two_three_z2 = two_one_z2 
+
+    local three_one_x1 = one_one_x1
+    local three_one_x2 = one_one_x2
+    local three_one_z1 = two_one_z2
+    local three_one_z2 = three_one_z1 + thirds_z
+    
+    local three_two_x1 = one_two_x1
+    local three_two_x2 = one_two_x2
+    local three_two_z1 = three_one_z1
+    local three_two_z2 = three_one_z2
+
+    local three_three_x1 = one_three_x1
+    local three_three_x2 = one_three_x2
+    local three_three_z1 = three_one_z1
+    local three_three_z2 = three_one_z2
+
+    -- calculate distributions
+    local num_planets = math.random(P._.default_planet_limit_min, P._.default_planet_limit_max)/4
+    local num_ships = math.random(P._.default_ship_limit_min, P._.default_ship_limit_max)/4
+    local num_starbases = math.random(P._.default_starbase_limit_min, P._.default_starbase_limit_max)/4
+    starbase_name_counter = 0
+
+    -- generate q1 planets
+    q1_planets= {}
+
+    for i = 1, num_planets do
+        local planet_name = P.helper.get_random_planet_name()
+        local planet_x = math.random(one_one_x1, one_one_x2) 
+        local planet_y = math.random(P._.y_known_dim)
+        local planet_z = math.random(one_one_z1, one_one_z2)
+        local planet_radius = math.random(6000)
+        local planet_security = math.random(3)-1 -- 0:low, 1:medium, 2:high
+        local planet_id = add_planet(planet_name, planet_x, planet_y, planet_z, planet_radius, planet_security)
+        table.insert(q1_planets, planet_id)
+    end
+
+    q1_ships= {}
+    q1_faction = 1
+
+    for i = 1, num_ships do
+        ship_name = "Q1 Ship " .. i
+        ship_type = math.random(14)-1
+        ship_x = math.random(one_one_x1, one_one_x2)
+        ship_y = math.random(P._.y_known_dim)
+        ship_z = math.random(one_one_z1, one_one_z2)
+        ship_id = add_ship(ship_name, ship_x, ship_y, ship_z, ship_type, q1_faction, 1)
+        table.insert(q1_ships, ship_id)
+    end
+
+    q1_starbases = {}
+    
+    for i = 1, num_starbases do
+        local starbase_x = math.random(one_one_x1, one_one_x2)
+        local starbase_y = math.random(P._.y_known_dim)
+        local starbase_z = math.random(one_one_z1, one_one_z2)
+        local starbase_id = add_starbase(starbase_x, starrbase_y, starbase_z, starbase_name_counter)
+        table.insert(q1_starbases, starbase_id)
+        starbase_name_counter = starbase_name_counter + 1
+    end
+
+    -- generate q2 planets, ships an SB
+    q2_planets= {}
+
+    for i = 1, num_planets do
+        local planet_name = P.helper.get_random_planet_name()
+        local planet_x = math.random(one_three_x1, one_three_x2) 
+        local planet_y = math.random(P._.y_known_dim)
+        local planet_z = math.random(one_three_z1, one_three_z2)
+        local planet_radius = math.random(6000)
+        local planet_security = math.random(3)-1 -- 0:low, 1:medium, 2:high
+        local planet_id = add_planet(planet_name, planet_x, planet_y, planet_z, planet_radius, planet_security)
+        table.insert(q2_planets, planet_id)
+    end
+
+    q2_ships= {}
+    q2_faction = 2
+
+    for i = 1, num_ships do
+        ship_name = "Q2 Ship " .. i
+        ship_type = math.random(14)-1
+        ship_x = math.random(one_three_x1, one_three_x2)
+        ship_y = math.random(P._.y_known_dim)
+        ship_z = math.random(one_one_z1, one_one_z2)
+        ship_id = add_ship(ship_name, ship_x, ship_y, ship_z, ship_type, q1_faction, 1)
+        table.insert(q2_ships, ship_id)
+    end
+
+    q2_starbases = {}
+    
+    for i = 1, num_starbases do
+        local starbase_x = math.random(one_three_x1, one_three_x2)
+        local starbase_y = math.random(P._.y_known_dim)
+        local starbase_z = math.random(one_three_z1, one_three_z2)
+        local starbase_id = add_starbase(starbase_x, starrbase_y, starbase_z, starbase_name_counter)
+        table.insert(q2_starbases, starbase_id)
+        starbase_name_counter = starbase_name_counter + 1
+    end
+    
+    -- generate q3 planets
+    q3_planets= {}
+
+    for i = 1, num_planets do
+        local planet_name = P.helper.get_random_planet_name()
+        local planet_x = math.random(three_one_x1, three_one_x2) 
+        local planet_y = math.random(P._.y_known_dim)
+        local planet_z = math.random(three_one_z1, three_one_z2)
+        local planet_radius = math.random(6000)
+        local planet_security = math.random(3)-1 -- 0:low, 1:medium, 2:high
+        local planet_id = add_planet(planet_name, planet_x, planet_y, planet_z, planet_radius, planet_security)
+        table.insert(q3_planets, planet_id)
+    end
+
+    q3_ships= {}
+    q3_faction = 3
+
+    for i = 1, num_ships do
+        ship_name = "Q3 Ship " .. i
+        ship_type = math.random(14)-1
+        ship_x = math.random(three_one_x1, three_one_x2)
+        ship_y = math.random(P._.y_known_dim)
+        ship_z = math.random(three_one_x1, three_one_z2)
+        ship_id = add_ship(ship_name, ship_x, ship_y, ship_z, ship_type, q3_faction, 1)
+        table.insert(q3_ships, ship_id)
+    end
+
+    q3_starbases = {}
+    
+    for i = 1, num_starbases do
+        local starbase_x = math.random(three_one_x1, three_one_x2)
+        local starbase_y = math.random(P._.y_known_dim)
+        local starbase_z = math.random(three_one_z1, three_one_z2)
+        local starbase_id = add_starbase(starbase_x, starrbase_y, starbase_z, starbase_name_counter)
+        table.insert(q3_starbases, starbase_id)
+        starbase_name_counter = starbase_name_counter + 1
+    end
+    
+    -- generate q4 planets
+    q4_planets= {}
+
+    for i = 1, num_planets do
+        local planet_name = P.helper.get_random_planet_name()
+        local planet_x = math.random(three_three_x1, three_three_x2) 
+        local planet_y = math.random(P._.y_known_dim)
+        local planet_z = math.random(three_three_z1, three_three_z2)
+        local planet_radius = math.random(6000)
+        local planet_security = math.random(3)-1 -- 0:low, 1:medium, 2:high
+        local planet_id = add_planet(planet_name, planet_x, planet_y, planet_z, planet_radius, planet_security)
+        table.insert(q4_planets, planet_id)
+    end
+
+    q4_ships= {}
+    q4_faction = 4
+
+    for i = 1, num_ships do
+        ship_name = "Q4 Ship " .. i
+        ship_type = math.random(14)-1
+        ship_x = math.random(three_three_x1, three_three_x2)
+        ship_y = math.random(P._.y_known_dim)
+        ship_z = math.random(three_one_z1, three_one_z2)
+        ship_id = add_ship(ship_name, ship_x, ship_y, ship_z, ship_type, q4_faction, 1)
+        table.insert(q4_ships, ship_id)
+    end
+
+    q4_starbases = {}
+    
+    for i = 1, num_starbases do
+        local starbase_x = math.random(three_three_x1, three_three_x2)
+        local starbase_y = math.random(P._.y_known_dim)
+        local starbase_z = math.random(three_three_z1, three_three_z2)
+        local starbase_id = add_starbase(starbase_x, starrbase_y, starbase_z, starbase_name_counter)
+        table.insert(q3_starbases, starbase_id)
+        starbase_name_counter = starbase_name_counter + 1
+    end
+
+    -- add asteroids
+    for i = 1, 100 do
+        local asteroid_x = math.random(two_one_x1, two_one_x2)
+        local asteroid_y = math.random(P._.y_known_dim)
+        local asteroid_z = math.random(two_one_z1, two_one_z2)
+        local asteroid_v = math.random()
+        local carbon = math.random()
+        local silicates = math.random()
+        local nickeliron = math.random()
+        local preciousmetals = math.random()
+        local asteroid_id = add_asteroid(asteroid_x, asteroid_y, asteroid_z)
+        set_asteroid_minerals(asteroid_id, carbon, silicates, nickeliron, preciousmetals)
+    end
+
+
+    for i = 1, 100 do
+        local asteroid_x = math.random(two_two_x1, two_two_x2)
+        local asteroid_y = math.random(P._.y_known_dim)
+        local asteroid_z = math.random(two_two_z1, two_two_z2)
+        local asteroid_v = math.random()
+        local carbon = math.random()
+        local silicates = math.random()
+        local nickeliron = math.random()
+        local preciousmetals = math.random()
+        local asteroid_id = add_asteroid(asteroid_x, asteroid_y, asteroid_z)
+        set_asteroid_minerals(asteroid_id, carbon, silicates, nickeliron, preciousmetals)
+    end
+
+    for i = 1, 100 do
+        local asteroid_x = math.random(two_three_x1, two_three_x2)
+        local asteroid_y = math.random(P._.y_known_dim)
+        local asteroid_z = math.random(two_three_z1, two_three_z2)
+        local asteroid_v = math.random()
+        local carbon = math.random()
+        local silicates = math.random()
+        local nickeliron = math.random()
+        local preciousmetals = math.random()
+        local asteroid_id = add_asteroid(asteroid_x, asteroid_y, asteroid_z)
+        set_asteroid_minerals(asteroid_id, carbon, silicates, nickeliron, preciousmetals)
+    end
+
+    -- add nebula
+    for i = 1, 5 do
+        local deriv_x = math.random(one_two_x1, one_two_x2)
+        local deriv_y = math.random(5000, 50000)
+        local deriv_z = math.random(one_two_z1, one_two_z2)
+        local nebula_r = math.random(100000)
+        add_nebula("Nebula", deriv_x, deriv_y, deriv_z, nebula_r)
+    end
+
+    for i = 1, 5 do
+        local deriv_x = math.random(two_two_x1, two_two_x2)
+        local deriv_y = math.random(5000, 50000)
+        local deriv_z = math.random(two_two_z1, two_two_z2)
+        local nebula_r = math.random(100000)
+        add_nebula("Nebula", deriv_x, deriv_y, deriv_z, nebula_r)
+    end
+
+    for i = 1, 5 do
+        local deriv_x = math.random(three_two_x1, three_two_x2)
+        local deriv_y = math.random(5000, 50000)
+        local deriv_z = math.random(three_two_z1, three_two_z2)
+        local nebula_r = math.random(100000)
+        add_nebula("Nebula", deriv_x, deriv_y, deriv_z, nebula_r)
+    end
+
 end
 P.create.universe_1 = create_universe_1
 

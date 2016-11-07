@@ -9,7 +9,7 @@ if AC_DEBUG_MODE == 1 then
     api.__.test_api()
 end
 
-api.create.universe(0)
+api.create.universe(1)
 
 
 -- load random scenario
