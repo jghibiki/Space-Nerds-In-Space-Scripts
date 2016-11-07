@@ -14,11 +14,11 @@ Automatically generate a campeign from 14 randomly chosen universe designs, and 
         - split: split universe into 3rds with the middle third a no-man's land (aka two factions)
     - [X] Galaxy Design 1
         - quartered: split universe into 8ths with 4 clusters separated by no-man's land
-    - [ ] Galaxy Design 2
+    - [X] Galaxy Design 2
         - dense center: densely packed center surrounded by empty space
-    - [ ] Galaxy Design 3
+    - [X] Galaxy Design 3
         - bulls eye: dense exterior ring surrounding a cluster in the center
-    - [ ] Galaxy Design 4
+    - [X] Galaxy Design 4
         - doughnut: one dense ring
     - [ ] Galaxy Design 5
         - 2 arm spiral: two dense arms spiraling around the center of the universe
