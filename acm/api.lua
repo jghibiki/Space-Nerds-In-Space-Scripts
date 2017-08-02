@@ -1079,10 +1079,10 @@ function create_universe_5()
 	starbase_name_counter = 1
 	
 	local range = 500
-	
-	for i = 1, table.getn(fibonacci_items) do
-		fib = table.get(fibonacci_items, i)
-		for j = i, math.random(1 * fib, 5 * fib) do
+
+	for k, v in pairs(fibonacci_items) do
+        local fib = v
+		for j = 1, math.random(1 * fib, 5 * fib) do
 			local obj_x = math.random(range_start_x * range, (range_start_x + fib) * range)
 			local obj_y = math.random(range_start_y * range, (range_start_y + fib) * range)
 			local obj_z = range_start_z -- we could look at doing a 3d spiral
@@ -1096,20 +1096,24 @@ function create_universe_5()
 			
 			if obj_type == 1 then
 				-- obj type starbase
-				local starbase_id = add_starbase(starbase_x, starrbase_y, starbase_z, starbase_name_counter)
+				local starbase_id = add_starbase(obj_x, obj_y, obj_z, starbase_name_counter)
 				table.insert(starbases, starbase_id)
 				starbase_name_counter = starbase_name_counter + 1
-			elif obj_type == 2 then
+			elseif obj_type == 2 then
 				-- obj type planet
-				local planet_name = P.heler.get_random_planet_name()
+				local planet_name = P.helper.get_random_planet_name()
 				local planet_radius = math.random(6000)
 				local planet_security = math.random(3)-1 -- 0:low, 1:medium, 2:high
-				local planet_id = add_planet(planet_name, obj_x, obj_y, planet_z, obj_radius, planet_security)
+				local planet_id = add_planet(planet_name, obj_x, obj_y, obj_z, planet_radius, planet_security)
         		table.insert(planets, planet_id)
-			elif obj_type == 3 then
+			elseif obj_type == 3 then
 				-- obj type nebula
-			elif obj_type == 4 then
+			elseif obj_type == 4 then
 				-- obj type asteroid
+            end
+
+            range_start_x = range_start_x + fib
+            range_start_y = range_start_y + fib
 		end
 	end
 	
@@ -1360,7 +1364,7 @@ function get_random_planet_name()
 end
 P.helper.get_random_planet_name = get_random_planet_name
 	
-functon fibonacci(n)
+function fibonacci(n)
 	a, b = 0, 1
 	items = { b }
 	for i = 1, n do
@@ -1386,12 +1390,12 @@ function force_module_reload(module)
 end
 P.__.force_module_reload = force_module_reload
 
-function test_api()
+function test_api_load()
     player_name = P.helper.get_player_name()
     player_ids = get_player_ship_ids()
     text_to_speech(player_ids[1], "Auto Campeign A P I Loaded Successfully.")
 end
-P.__.test_api = test_api
+P.__.test_api_load = test_api_load
 
 function debug_packages()
  for k,v in pairs(package.loaded) do print(k, v) end 
