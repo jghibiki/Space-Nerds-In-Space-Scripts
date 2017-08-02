@@ -1055,6 +1055,64 @@ P.create.universe_4 = create_universe_4
 
 function create_universe_5()
     -- 5: 2 arm spiral: two dense arms spiraling around the center of the universe
+    -- use fibbonachi seq to generate spread from center
+    -- multiply spread for current step by current fibbonachi value
+    -- generate random number of items in range of spread
+    -- shift x and y of items by some offset that increases steadily with each step to create spiral
+	
+	local fibonacci_items = P.helper.fibonacci(5)
+	
+	local u_center_x = P._.universe_center_x
+	local u_center_y = P._.universe_center_y
+	local u_center_z = P._.universe_center_z
+	
+    local range_start_x = u_center_x
+	local range_start_y = u_center_y
+	local range_start_z = u_center_z
+	
+	planets = {}
+	starbases = {}
+	nebuli = {}
+	asteroids = {}
+	ships = {}
+	
+	starbase_name_counter = 1
+	
+	local range = 500
+	
+	for i = 1, table.getn(fibonacci_items) do
+		fib = table.get(fibonacci_items, i)
+		for j = i, math.random(1 * fib, 5 * fib) do
+			local obj_x = math.random(range_start_x * range, (range_start_x + fib) * range)
+			local obj_y = math.random(range_start_y * range, (range_start_y + fib) * range)
+			local obj_z = range_start_z -- we could look at doing a 3d spiral
+			
+			-- object types
+			--	- starbase
+			--	- planet
+			--	- nebula
+			--	- asteroid
+			local obj_type = math.random(1, 4)
+			
+			if obj_type == 1 then
+				-- obj type starbase
+				local starbase_id = add_starbase(starbase_x, starrbase_y, starbase_z, starbase_name_counter)
+				table.insert(starbases, starbase_id)
+				starbase_name_counter = starbase_name_counter + 1
+			elif obj_type == 2 then
+				-- obj type planet
+				local planet_name = P.heler.get_random_planet_name()
+				local planet_radius = math.random(6000)
+				local planet_security = math.random(3)-1 -- 0:low, 1:medium, 2:high
+				local planet_id = add_planet(planet_name, obj_x, obj_y, planet_z, obj_radius, planet_security)
+        		table.insert(planets, planet_id)
+			elif obj_type == 3 then
+				-- obj type nebula
+			elif obj_type == 4 then
+				-- obj type asteroid
+		end
+	end
+	
 end
 P.create.universe_5 = create_universe_5
 
@@ -1301,6 +1359,17 @@ function get_random_planet_name()
     return names[math.random(num_names)]
 end
 P.helper.get_random_planet_name = get_random_planet_name
+	
+functon fibonacci(n)
+	a, b = 0, 1
+	items = { b }
+	for i = 1, n do
+		a, b = b, a + b
+		table.insert(items, b)
+	end
+	return items
+end
+P.helper.fibonacci = fibonacci
 
 
 ------------------------------------------
@@ -1328,6 +1397,10 @@ function debug_packages()
  for k,v in pairs(package.loaded) do print(k, v) end 
 end
 P.__.debug_packages = debug_packages
+
+
+	
+
 
 
 
