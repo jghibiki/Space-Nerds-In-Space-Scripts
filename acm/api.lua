@@ -1,5 +1,7 @@
 local P = {}
 
+math.randomseed( os.time() )
+
 ------------------------------------------
 ------------------------------------------
 -- Constants
@@ -29,6 +31,15 @@ P._.default_starbase_limit_min = 20
 
 P._.default_asteroid_limit_max = 300
 P._.default_asteroid_limit_min = 100
+
+------------------------------------------
+------------------------------------------
+-- Object collections 
+------------------------------------------
+------------------------------------------
+
+P.entities = {}
+
 
 ------------------------------------------
 ------------------------------------------
@@ -1060,7 +1071,7 @@ function create_universe_5()
     -- generate random number of items in range of spread
     -- shift x and y of items by some offset that increases steadily with each step to create spiral
 	
-	local fibonacci_items = P.helper.fibonacci(5)
+	local fibonacci_items = P.helper.fibonacci(10)
 	
 	local u_center_x = P._.universe_center_x
 	local u_center_y = P._.universe_center_y
@@ -1078,45 +1089,110 @@ function create_universe_5()
 	
 	starbase_name_counter = 1
 	
-	local range = 500
+    local obj_z = range_start_z
 
-	for k, v in pairs(fibonacci_items) do
-        local fib = v
-		for j = 1, math.random(1 * fib, 5 * fib) do
-			local obj_x = math.random(range_start_x * range, (range_start_x + fib) * range)
-			local obj_y = math.random(range_start_y * range, (range_start_y + fib) * range)
-			local obj_z = range_start_z -- we could look at doing a 3d spiral
-			
-			-- object types
-			--	- starbase
-			--	- planet
-			--	- nebula
-			--	- asteroid
-			local obj_type = math.random(1, 4)
-			
-			if obj_type == 1 then
-				-- obj type starbase
-				local starbase_id = add_starbase(obj_x, obj_y, obj_z, starbase_name_counter)
-				table.insert(starbases, starbase_id)
-				starbase_name_counter = starbase_name_counter + 1
-			elseif obj_type == 2 then
-				-- obj type planet
-				local planet_name = P.helper.get_random_planet_name()
-				local planet_radius = math.random(6000)
-				local planet_security = math.random(3)-1 -- 0:low, 1:medium, 2:high
-				local planet_id = add_planet(planet_name, obj_x, obj_y, obj_z, planet_radius, planet_security)
-        		table.insert(planets, planet_id)
-			elseif obj_type == 3 then
-				-- obj type nebula
-			elseif obj_type == 4 then
-				-- obj type asteroid
+    for i=1, 100 do
+        local y = 0
+        local x = 0
+        local j = math.random(0, 4)
+
+        if j == 0 then
+            x = range_start_x - math.random(5000, 50000)
+            y = range_start_y - math.random(5000, 50000)
+        elseif j == 1 then
+            x = range_start_x + math.random(5000, 50000)
+            y = range_start_y - math.random(5000, 50000)
+        elseif j == 2 then
+            x = range_start_x - math.random(5000, 50000)
+            y = range_start_y + math.random(5000, 50000)
+        else
+            x = range_start_x + math.random(5000, 50000)
+            y = range_start_y + math.random(5000, 50000)
+        end
+
+        local obj_type = math.random()
+        
+        if obj_type < .1 then
+            -- obj type starbase
+            local starbase_id = add_starbase(x, y, obj_z, starbase_name_counter)
+            table.insert(starbases, starbase_id)
+            starbase_name_counter = starbase_name_counter + 1
+        elseif obj_type < .35 then
+            -- obj type planet
+            local planet_name = P.helper.get_random_planet_name()
+            local planet_radius = math.random(6000)
+            local planet_security = math.random(3)-1 -- 0:low, 1:medium, 2:high
+            local planet_id = add_planet(planet_name, x, y, obj_z, planet_radius, planet_security)
+            table.insert(planets, planet_id)
+        elseif obj_type < .50 then
+            -- obj type nebula
+            local radius = math.random(6000)
+            local name = tostring(math.random(0, 999999999))
+            local nebula_id = add_nebula(name, x, y, obj_z, radius)
+            table.insert(nebuli, nebula_id)
+        else
+            -- obj type asteroid
+            local asteroid_id = add_asteroid(x, y, obj_z)
+            table.insert(asteroids, asteroid_id)
+         end
+    
+    end
+
+    n = 100
+    a = 0.5
+    b = 0.6
+
+    for i=1, n do
+        -- a point between 0 and 1 normally distributed
+        point = (math.sqrt( -2 * math.log(math.random())) * math.cos(2 * math.pi * math.random()) / 2)
+
+        x1 = a * math.exp(b*point) * math.cos(point)
+        y1 = a * math.exp(b*point) * math.sin(point)
+
+        x2 = a * math.exp(b*point) * math.cos(point + math.pi)
+        y2 = a * math.exp(b*point) * math.sin(point + math.pi)
+
+        x1 = range_start_x + (range_start_x * x1 + math.random(5000, 50000))
+        y1 = range_start_y + (range_start_y * y1 + math.random(5000, 50000))
+
+        x2 = range_start_x + (range_start_x * x2 + math.random(5000, 50000))
+        y2 = range_start_y + (range_start_y * y2 + math.random(5000, 50000))
+
+        xys = { {x1, y1}, {x2, y2} }
+
+        for k, v in pairs(xys) do
+            local x = v[1]
+            local y = v[2]
+
+            local obj_type = math.random()
+            
+            if obj_type < .1 then
+                -- obj type starbase
+                local starbase_id = add_starbase(x, y, obj_z, starbase_name_counter)
+                table.insert(starbases, starbase_id)
+                starbase_name_counter = starbase_name_counter + 1
+            elseif obj_type < .35 then
+                -- obj type planet
+                local planet_name = P.helper.get_random_planet_name()
+                local planet_radius = math.random(6000)
+                local planet_security = math.random(3)-1 -- 0:low, 1:medium, 2:high
+                local planet_id = add_planet(planet_name, x, y, obj_z, planet_radius, planet_security)
+                table.insert(planets, planet_id)
+            elseif obj_type < .50 then
+                -- obj type nebula
+                local radius = math.random(6000)
+                local name = tostring(math.random(0, 999999999))
+                local nebula_id = add_nebula(name, x, y, obj_z, radius)
+                table.insert(nebuli, nebula_id)
+            else
+                -- obj type asteroid
+                local asteroid_id = add_asteroid(x, y, obj_z)
+                table.insert(asteroids, asteroid_id)
             end
-
-            range_start_x = range_start_x + fib
-            range_start_y = range_start_y + fib
-		end
+        end
 	end
-	
+
+    P.entities.planets = planets
 end
 P.create.universe_5 = create_universe_5
 
