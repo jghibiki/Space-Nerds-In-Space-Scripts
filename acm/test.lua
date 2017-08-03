@@ -89,7 +89,7 @@ end
 for k, v in pairs(testing.planets) do
     print(v["x"]/api._.x_known_dim, v["y"]/api._.y_known_dim) 
     x = math.floor((v["x"]/api._.x_known_dim) * 100)
-    y = math.floor((v["y"]/api._.y_known_dim) * 100)
+    y = math.floor((v["z"]/api._.y_known_dim) * 100)
 
     if x < 100 and x > 0 and y > 0 and y < 100 then
         grid[y][x] = "P"
@@ -99,7 +99,7 @@ end
 for k, v in pairs(testing.starbases) do
     print(v["x"]/api._.x_known_dim, v["y"]/api._.y_known_dim) 
     x = math.floor((v["x"]/api._.x_known_dim) * 100)
-    y = math.floor((v["y"]/api._.y_known_dim) * 100)
+    y = math.floor((v["z"]/api._.y_known_dim) * 100)
 
     if x < 100 and x > 0 and y > 0 and y < 100 then
         grid[y][x] = "S"
@@ -109,7 +109,7 @@ end
 for k, v in pairs(testing.nebuli) do
     print(v["x"]/api._.x_known_dim, v["y"]/api._.y_known_dim) 
     x = math.floor((v["x"]/api._.x_known_dim) * 100)
-    y = math.floor((v["y"]/api._.y_known_dim) * 100)
+    y = math.floor((v["z"]/api._.y_known_dim) * 100)
 
     if x < 100 and x > 0 and y > 0 and y < 100 then
         grid[y][x] = "N"
@@ -119,7 +119,7 @@ end
 for k, v in pairs(testing.asteroids) do
     print(v["x"]/api._.x_known_dim, v["y"]/api._.y_known_dim) 
     x = math.floor((v["x"]/api._.x_known_dim) * 100)
-    y = math.floor((v["y"]/api._.y_known_dim) * 100)
+    y = math.floor((v["z"]/api._.y_known_dim) * 100)
 
     if x < 100 and x > 0 and y > 0 and y < 100 then
         grid[y][x] = "A"
