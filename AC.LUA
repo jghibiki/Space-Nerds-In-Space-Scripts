@@ -1,4 +1,17 @@
-AC_DEBUG_MODE = 1
+AC_DEBUG_MODE = 0
+
+clear_all()
+
+player_ids = get_player_ship_ids();
+player_name = "Unknown Player"
+if (player_ids[1]) then
+    move_object(player_ids[1], startx, starty, startz);
+    player_name = get_object_name(player_ids[1]);
+    reset_player_ship(player_ids[1]);
+    print("Playe ids", player_ids[1])
+    set_faction(player_ids[1], 1); -- set player faction to neutral so only zarkons fight
+end
+
 
 base_module = "share.snis.luascripts.acm."
 
@@ -9,7 +22,7 @@ if AC_DEBUG_MODE == 1 then
     api.__.test_api()
 end
 
-api.create.universe(4)
+api.create.universe(5)
 
 
 -- load random scenario
